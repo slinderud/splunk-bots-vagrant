@@ -18,6 +18,7 @@ I run this using the latest splunk version. If you find any issues please give m
 
 ```bash
 brew install ansible
+brew install git-lfs
 brew cask install virtualbox
 brew cask install vagrant
 vagrant plugin install vagrant-disksize
@@ -33,6 +34,7 @@ Please create a `secrets.yml`. Check `secrets.yml.example` for the variables nee
 - `deploy.yml`  Change role depending on what version of bots you want to run
 
 ```bash
+git lfs pull
 vagrant up splunk
 ```
 
