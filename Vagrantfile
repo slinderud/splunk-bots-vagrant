@@ -100,7 +100,7 @@ Vagrant.configure(2) do |config|
     config.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy.yml"
       ansible.groups = ansible_groups
-      ansible.verbose = "-vvv"
+#      ansible.verbose = "-vvv"
     end #end ansible
   end #if windows
 end #config
