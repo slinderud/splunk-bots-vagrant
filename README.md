@@ -26,6 +26,8 @@ vagrant plugin install vagrant-disksize
 
 ## Usage
 
+Please create a `secrets.yml`. Check `secrets.yml.example` for the variables needed.
+
 - `secrets.yml` Contains username and passwords for splunk and BOTS specific SA accounts
 - `devices.yml` Defines the vagrant hosts and settings
 - `deploy.yml`  Change role depending on what version of bots you want to run
