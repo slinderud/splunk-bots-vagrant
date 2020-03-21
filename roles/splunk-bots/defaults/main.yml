@@ -1,0 +1,23 @@
+---
+# CTF Answer Service Account. Not tested using admin.
+#splunk_bots_casa_user: canbanaboy
+#splunk_bots_casa_password: admin!23
+
+# BOTS Admin User
+#splunk_bots_admin_user: "{{ splunk_admin_user }}"
+#splunk_bots_admin_password: "{{ splunk_admin_password }}"
+
+
+#'botsv2' or 'botsv3'
+splunk_bots_version: botsv3
+#'attack_only' or 'full'
+splunk_botsv2_dataset: attack_only
+
+
+# To be continued
+# Load Data. custom or bots
+# load_questions: bots
+# load_answers: bots
+# load_hints: bots
+# load_eula: custom
+# load_lol:

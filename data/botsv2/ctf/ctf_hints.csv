@@ -1,0 +1,133 @@
+Number,HintNumber,HintCost,Hint
+100,1,50,Look at Amber's web traffic.
+100,2,20,Find Amber's hostname and find the IP address that she was most likely using. Then look at the stream:http sourcetype.
+100,3,20,Take a look at src_ip=10.0.2.101 and the stream:http sourcetype. Look at the websites that Amber visited over the month of August.
+101,1,20,Look for emails to Amber Turing.
+101,2,20,Find emails from aturing that were sent to the domain from question 100.
+101,3,20,Look at the sourcetype=stream:smtp and filter on the sender=aturing@froth.ly and/or recipient=aturing@froth.ly. Look at the content and body of emails that have something to do with competitors. The name of the CEO should be in the email.
+102,1,5,Look at Amber's email traffic.
+102,2,20,Find the last email from the domain in question 100.
+103,1,20,Look for emails sent from Amber Turing.
+103,2,20,Look for aturing@froth.ly sending email to the address listed in question 102.
+103,3,20,Search sourcetype=stream:smtp sender=aturing@froth.ly and find the attachment she sent.
+104,1,20,Look for emails sent from Amber Turing.
+104,2,20,Review the body of emails that Amber has sent.
+104,3,20,Review the email with base64-encoded text for body (or content) and decode the base64.
+200,1,10,"Do you have access to a network diagram? If you do, use it!"
+200,2,20,A Splunk Stream forwarder running in the Frothly on-prem environment would observe http traffic destined for www.brewertalk.com as having an internet routable IP address.
+201,1,50,App scanners are often 'noisy' and therefore easy to detect with automated correlation searches.
+201,2,75,Drill down into contributing events if you can!
+202,1,20,"Analyze all HTTP traffic from the scanning system to www.brewertalk.com, and inspect the different HTTP user agents. A different HTTP user agent often indicates a different HTTP client program was in use."
+202,2,30,"For each HTTP user agent, inspect the URI that the user agent is interacting with."
+203,1,20,SQL stands for Structured Query Language and it is used to interact with relational databases like mysql. Some common terms in SQL include 'SELECT' 'WHERE' 'FROM' and 'JOIN'.
+203,2,25,SQL injection vulnerabilities can arise when a programmer does not properly check user input for characters that might have an impact on how the underlying database query is assembled in his or her code. A single quote character provided as input to a web page ' is often a tell-tale sign of a SQL injection attack.
+203,3,30,XML is one of many data formats that can be stored in relational databases like mysql. Some SQL commands in the MySQL database can be used to produce an error that leaks database contents. Look for a SQL command that updates XML.
+204,1,100,"Narrow down the events to only those that include the suspected SQL injection traffic. Stream HTTP events contain the details you need. Filter on the source IP, dest, IP, HTTP user agent and URI path."
+204,2,150,These events will probably make a lot more sense if you reverse the Splunk event ordering by piping your search results to the reverse command. This will show you the first SQL injection commands at the top of the list and later events below.
+204,3,200,There is a lot of data captured in these events. You are looking for two pieces of data in the dest_content field. The first can be found following the string 'XPATH syntax error: '
+204,4,250,The other important piece of data in the dest_content field can be extracted with the following regular expression: '<dt>Query:</dt>\s+<dd>\s+(?<sqli_query>[^<]+)' Look for the sqli_query values that are stealing salt values.
+205,1,100,His hashed password and salt was stolen via SQLi and captured in Splunk. Also note a 'top 1000' password list is available in a Splunk lookup table file called 'top_1000.csv'. Use '| inputlookup top_1000.csv' to inspect it.
+205,2,150,"By inspecting the code for this forum software, it can be determined that the stored password hash is computed as follows: md5( md5(salt) + md5(plaintext password) ) where '+' is simple string concatenation."
+205,3,200,"The Splunk eval command includes an md5 hash function. Beware that the exploit used in this attack chops the final character from the password hash and includes it as a single character string in the next SQLi extraction. When you use this string, either add the character back to the end of the hash, or just use a wildcard match on the beginning of it."
+205,4,300,Btun's salt value is 'tlX7cQPE' and his complete password hash is 'f91904c1dd2723d5911eeba409cc0d14'
+206,1,50,The attack is obscured in the logs by URL encoding.
+206,2,100,Splunk has the capability to URLdecode strings. Check your quick reference guide or Google for it.
+206,3,100,Try using | eval decoded_uri=urldecode(uri)
+206,4,100,Don't forget to check if others on your team have investigated this before.
+207,1,20,Check out sourcetype=stream:http
+207,2,30,Inspect the uri_query field.
+208,1,50,"Anti-CSRF tokens are usually hidden form elements set when the browser loads an HTML page containing a form. If the form is submitted without the anti-CSRF token, the backend code of the website rejects the transaction as it might have come from a malicious source rather than from a legitimate user of the form."
+208,2,100,"One of the many ways that an attacker can abuse a cross site scripting vulnerability is to use it to defeat CSRF protections. If you carefully inspect XSS attacks in the data set, you will stumble on some malicious code that is stealing the anti-CSRF token."
+208,3,150,"On brewertalk.com, users created with usergroup=4 are administrators."
+208,4,200,The name of the anti-CSRF token is my_post_key
+209,1,50,The attacker was trying to masquerade as something that would look legitimate to a casual observer.
+209,2,100,The attacker stole a trick from domain squatters by using a homograph attack. More info on homograph attacks can be found on Wikipedia.
+209,3,150,"The password of this new, unauthorized, malicious administrative account is beer_lulz"
+300,1,20,Use Asset Center in ES.
+301,1,50,Look for video files downloaded to MACLORY-AIR13.
+302,1,20,Use Identity Center in ES.
+303,1,30,Look for threat activity from Mallory's MacBook in the Incident Review dashboard.
+304,1,30,Do you see MACLORY-AIR13 communicating with known Tor addresses? That's misleading.
+305,1,20,People that work on PowerPoint presentations generally save them in their Documents folder.
+305,2,50,The time that Splunk indexed this information might not be the time the file was modified.
+306,1,20,What time did the 'Office 2016 Patcher.app' get added to MACLORY-AIR13's filesystem?
+306,2,50,What time was the first file with *.crypt added to MACLORY-AIR13's filesystem?
+307,1,30,osquery_results is a great sourcetype to review.
+307,2,50,Look for unusual files in a place that Mallory would come across them.
+307,3,100,"If you can figure out what kind of malware this is, do some open source intelligence research to determine how it behaves. Find an online database of USB vendors."
+307,4,200,Various sourcetypes can tell you how things look when the run. Look at 'ps' and look at 'osquery_results' from kutekitten.
+308,1,0,Review the hints for question 307.
+309,1,0,Review the hints for question 307.
+310,1,30,Have a look at the stream:dns sourcetype and observe queries from kutekitten.
+310,2,50,"You need a lookup. Find one, and also review this: https://www.splunk.com/blog/2015/08/04/detecting-dynamic-dns-domains-in-splunk.html"
+311,1,0,Review the hints for question 310.
+312,1,50,You're going to need a lookup. Are there any loaded in the system that might help you?
+312,2,100,We want the average of ranks. Not the average of hits to the domains.
+312,3,200,https://www.splunk.com/blog/2016/03/22/splunking-1-million-urls.html
+313,1,30,Understanding from OSINT how this ransomware behaves is key to the answer.
+313,2,100,This ransomware is called 'Patcher' and it is terribly written and uses *NIX command line tools to wreak havoc.
+313,3,200,Patcher uses the UNIX zip utility.
+400,1,10,Frothly uses the Splunk wiredata product 'Stream' to collect email metadata. Look at the sourcetype stream:smtp
+400,2,60,The question mentions that Taedonggang sends a 'zip' file. Look in the sourcetype in hint 1 for attachments with a .zip extension.
+401,1,5,You might need to get more information before you tackle this question. Have you figured out the IP address of Taedonggang's server?
+401,2,10,Frothly currently only collects SSL data with Stream. Look at the sourcetype 'stream:TCP' for more information about SSL data.
+401,3,30,Issuer' is a value found in a TLS/SSL certificate. Try and find SSL/TLS certificates tied to the IP address of Taedonggang's attacking server.
+401,4,35,Look in sourcetype=stream:tcp with the IP address of Taedonggang and the field ssl_issuer.
+402,1,10,Check out the Incident Review dashboard.
+402,2,20,Open notable events for more details.
+402,3,35,Look for two notable events with the exact same title that has a filename in it.
+403,1,10,Investigations might shed some light on this.
+403,2,20,Did you know Enterprise Security has the ability to collect notes and screenshots from other analysts including threat intelligence?
+403,3,35,Find the investigation with the attachment to gain some additional intelligence about the threat.
+404,1,50,The question is asking about the use of a file called winsys32.dll. Look around for this file and pivot off its utilization!
+404,2,150,Find how and when the file winsys32.dll is used being used by Taedonggang. You will need to first find winsys32.dll and then pivot to a new sourcetype. Correlate by time and protocol.
+404,3,200,"If you have found the new sourcetype and one of the correct spans of time (there are more than one), look at the filename field. The answer should stare out at you."
+405,1,50,This is an open source intelligence question. You will need to find the file name/hash of the file that first infected Frothly (think of the extracted file from the answer to question 400) and then pivot off to the internet.
+405,2,100,If you have found the file that first infected Frothly with PowerShell Empire take a look at the Incident Review dashboard. You should find the hash and pivot off that hash in open source intelligence sources. Look at the chart in https://www.splunk.com/blog/2017/07/21/work-flow-ing-your-osint.html for a commonly-used sandbox site that takes file hashes.
+405,3,400,Find the answer to question 400. Look in the logs to find the name of document file extracted from the zipped attachment. Search for that filename in the Incident Review 'Search' filter. Take the hash mentioned in the 'comments' field and search Virustotal for that hash.
+406,1,10,First you will need to find the domain associated with the exfiltrated data. Look at the Stream metadata for a UDP protocol often used to exfiltrate data.
+406,2,100,Review the stream:dns sourcetype and find the IP address that has a high number of queries but is not a normal/legitimate target for DNS queries (IE not RFC1918 or Open DNS server). Look at the domain in the queries to that IP address. Pivot off of that to calculate shannon entropy.
+406,3,200,"If you have never calculated Shannon Entropy, look at the documents for the tool 'URL TOOLBOX' or recent entries in https://www.splunk.com/blog/2017/07/06/hunting-with-splunk-the-basics.html. This will teach you how to calculate Shannon entropy. Also review https://www.splunk.com/pdfs/events/govsummit/hunting_the_known_unknowns_with_DNS.pdf where you can learn how to detect DNS exfiltration"
+407,1,50,Review the question for keywords and search against the hosts in the network.
+407,2,100,Look in the sysmon logs for workstations: XmlWinEventLog:Microsoft-Windows-Sysmon/Operational if you haven't figured out where to start!
+407,3,300,"Once you find the event for scheduled tasks, you will need to pivot to the sourcetype=WinRegistry. In that sourcetype, look for where the scheduled task receives its destination information. You will need to decode it!"
+408,1,20,"Look through your notes of this incident, if you have any. Specifically look at the IP addresses used by Taedonggang. You will need to take information from the Taedonggang infrastructure seen attacking Frothy and pivot to open source intelligence."
+408,2,150,Specifically look at the C2 IP address used by Taedonggang to control their PowerShell Empire agents. Remember that less is more! Sometimes the absence of data helps you find things.
+408,3,300,Look at the SSL certificates. Think about fields that you can pivot on in open source intelligence.
+408,4,500,Taking information from hint number 3. Pivot off of different fields in an open source intelligence website that catalogs SSL certificates until you find the server! Review https://www.splunk.com/blog/2017/07/21/work-flow-ing-your-osint if you need help finding OSINT websites
+409,1,100,The data for this question is located in sourcetype=stream:ftp
+409,2,200,"Review the sourcetype referenced in hint one on August 25, 2017. You'll notice four distinct bursts of activity. Look at the largest one for the information you require. Find the start message in the logs (there is no stop). A key word is 'successful'."
+409,3,500,The data is NOT in a Splunk field of 'bytes'. You will need to write a regex against the data to find the answer. Review https://www.splunk.com/blog/2017/08/30/rex-groks-gibberish.html if you need help writing a regex!
+409,4,500,The information in the field you are parsing will have something like 'Megabytes per second' and 'Kilobytes' per second. Make sure you do your calculations with those terms in mind.
+500,1,10,"Find the source IP address that our user of interest is using, then broaden your search such that you can view all events specific to the user's src ip address."
+500,2,20,"HTTP cookies often contain information specific to a user session, including session identifiers."
+500,3,40,"After you get the events specific to the user's src ip address, you can append a '| reverse
+|table cookie' to get a better view of the cookies that the user clicked."
+501,1,50,"When a user fills out a web form passing information such as username, password, credit card numbers, etc., it's passed via a standard http field (form_data) which is captured by stream:http. Extract the username from that field and store it in a new field."
+501,2,100,You're going to need to look deeper into the packet at a field called dest_content to extract the grand order total. Look for the following string and use it in a regular expression to capture the value: 'grand_total'.
+501,3,200,The 'stats' command is useful for helping you to link several pieces of context together that occur within a single clickstream.
+502,1,50,Explore the stream:http data and try to determine what sort of context you can derive from the name of pages that the user is visiting.
+502,2,100,The uri_path field will tell you which pages either the user has clicked on and provide hints as to what their session looks like. Spend some time looking through the various uri_path values or get clever and think about keywords that may lead you to the uri_path value that indicates a user editing their account profile.
+502,3,200,This looks interesting: '/magento2/customer/account/editPost/
+503,1,50,Perform all field extractions involving information of interest first before joining the events together and applying further constraints.
+503,2,50,The usernames and passwords need to be extracted from the form_data field. The shipping and billing address can be found in the src_content field.
+503,3,100,Use the stats command to create a list of interesting context by session identifier. Remember to apply your constraints after the stats command to look at sessions where the shipping and billing address are both present in the session and they are not equal to each other.
+503,4,200,"Users who have made a purchase in the past automatically have previous shipping destinations displayed in their browser, which can be found in the stream:http field src_content. After the user changes their shipping address, you will see a different value displayed for the shipping address. If you are fixated on the first shipping address found within a stream, you are going to be stuck. Take a look in this url for the user-modified shipping address during the payment process: http://store.froth.ly/magento2/rest/default/V1/carts/mine/payment-information"
+504,1,50,Extract the session identifier from the form_key field and use it to tie together context of interest.
+504,2,100,The usernames and passwords need to be extracted from the form_data field. Here is an example of how to extract the domain from a sample splUsername field: |rex field=splUsername '(?<spldomain>[^\.|^\@]+.[^.]+)$'
+504,3,200,Take a look at Enterprise Security and you might find a notable event related to the web store identifying anomalous activity.
+505,1,10,Use the rex command to grab the username and session identifier from the cookie and form_data fields.
+505,2,20,"Since we are looking for unique combinations of IP and user agent, it's helpful to combine those two values into a single field. One way to do this is to use the eval command. https://answers.splunk.com/answers/100463/adding-strings-from-2-fields-into-1.html"
+505,3,30,"After you get your context listed by session identifier, you can run stats a second time to further narrow your results down to the unique IP and user agent combination."
+506,1,100,The coupon codes need to be extracted from the request field.
+506,2,200,You will need to dig a little deeper to determine whether or not a coupon submission was successful. Take a look in the dest_content to figure that out.
+506,3,400,"Use the eval command to create a field name to store whether a coupon submission was successful. If you can find strings in the dest_content indicative of success or failure, you can use this example as a framework: eval newField=if(like(dest_field,'%your_search_string%'),'Success',dest_field)"
+507,1,10,All the context you need to get this question is in the cookie and form_data fields.
+507,2,20,Forget about the session identifier for this question. Use stats to get your context lined up 'by password'
+507,3,40,Use the stats aggregate function 'dc' to get a distinct count of the values within a particular field. Example: ...|stats dc(field1) as distinct_count by field2.
+508,1,50,Set your date range appropriately and look for events containing the desired URL.
+508,2,100,The answer is directly referrenced within the events containing the specified URL.
+508,3,200,The http_referrer field will tell us which page the user was on just prior to landing on the specified checkout page.
+509,1,100,The coupon codes need to be extracted from the request field.
+509,2,200,You will need to dig a little deeper to determine whether or not a coupon submission was successful. Take a look in the dest_content to figure that out.
+509,3,400,"Use the eval command to create a field name to store whether a coupon submission was successful. If you can find a strings in the dest_content indicative of success or failure, you can use this example as a framework: eval newField=if(like(dest_field,'%your_search_string%'),'Success',dest_field)"

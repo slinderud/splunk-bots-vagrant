@@ -1,0 +1,98 @@
+_key,Hint,HintCost,HintNumber,Number
+,Use aws:cloudtrail as the sourcetype.,10,1,200
+,Look at the values within the user_type field.,25,2,200
+,Use aws:cloudtrail as the sourcetype.,10,1,201
+,Check out the AWS docs: https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudwatch-alarms-for-cloudtrail-additional-examples.html#cloudwatch-alarms-for-cloudtrail-no-mfa-example,25,2,201
+,Make sure you are not including console login activity.,40,3,201
+,"Use hardware as the sourcetype for hardware information such as CPU statistics, hard drives, network interface cards, memory, and more.",50,1,202
+,Use aws:cloudtrail as the sourcetype.,10,1,203
+,Use aws:cloudtrail as the sourcetype.,10,1,204
+,Use aws:s3:accesslogs as the sourcetype.,10,1,205
+,Use aws:s3:accesslogs as the sourcetype.,10,1,206
+,Take a closer look at who made (or requested) the upload.,25,2,206
+,Use perfmonmk:process as the sourcetype.,10,1,208
+,Which browser was in use when this endpoint visited the coin mining site(s)?,25,2,208
+,Use cloud-init-output as the sourcetype.,50,1,209
+,Check out the AWS docs: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html#user-data-cloud-init,125,2,209
+,What is the most common browser-based cryptominer?,50,1,210
+,Can you find DNS traffic with evidence of a common browser-based cryptomining technology?,125,2,210
+,Is there a laptop that communicates successfully to coinhive servers?,200,3,210
+,Use stream:dns as the sourcetype.,10,1,211
+,Use symantec:ep:security:file as the sourcetype.,10,1,212
+,First seen refers to the first event in the search results. See: https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Eventorderfunctions,25,2,212
+,Google search for the signature ID from the previous question and the term Symantec together.,10,1,213
+,Symantec has an online database of all signature IDs detected by SEP here: https://www.broadcom.com/support/security-center/attacksignatures,25,2,213
+,"Figure out what applications were blocked. The WinEventLog:Application sourcetype is helpful, as is the symantec:ep:security:file sourcetype.",10,1,214
+,Frothly gathers system information from Cisco NVM clients on their mobile workstations.,50,1,215
+,"Use cisconvmflowdata as the source to give you details about network flows, including the start and end times of flows.",100,1,216
+,"In order for Monero to be mined after it is created on a laptop, the laptop must be connected to one or more mining servers.",250,2,216
+,Calculate the start and end times of communication to the mining servers according to the NVM fields. Then calculate the delta between the first and last communications. This can all be done within a Splunk search.,400,3,216
+,Use stream:smtp as the sourcetype to find details of emails between Frothly employees.,100,1,217
+,Images are encoded within email in base64. Bud would have sent this email after the mining activity started.,250,2,217
+,You will need to find a site to decode the base64 to a viewable image. CyberChef is a good one!,400,3,217
+,Use aws:cloudtrail as the sourcetype.,50,1,218
+,"Make sure to include all the error codes, such as AccessDenied and NoSuchEntityException.",125,2,218
+,Use stream:smtp as the sourcetype.,10,1,219
+,Use stream:smtp as the sourcetype.,10,1,220
+,Use aws:cloudtrail as the sourcetype.,10,1,221
+,Use aws:cloudtrail as the sourcetype.,10,1,222
+,Start with aws:cloudtrail as the sourcetype.,50,1,223
+,Use aws:cloudwatchlogs as the sourcetype for DNS queries.,100,1,224
+,Look at the documentation for URL Toolbox (on Splunkbase) to help you parse out the subdomain substring. Use the Splunk len command to help you calculate the length or review the blog entries in https://www.splunk.com/blog/2017/07/06/hunting-with-splunk-the-basics.html. This will teach you how to split domains with URL Toolbox.,250,2,224
+,Make sure to include only the distinct third-level subdomain values.,400,3,224
+,Use stream:udp as the sourcetype to find the injected string and separate out the payload.,50,1,225
+,Google search for the two strings with special characters.,125,2,225
+,"Looking at one of the websites from the Google results, inspect the source code and identify the name of the image file.",200,3,225
+,Use ms:o365:management as the sourcetype for OneDrive activity.,10,1,300
+,A link (or .lnk) file is a shortcut file. Look for link files that are associated with OneDrive.,25,2,300
+,Filter your search to just upload activity.,40,3,300
+,Use ms:aad:signin as the sourcetype for Azure Active Directory sign-in activity.,10,1,301
+,Use WinEventLog:Application as the sourcetype to identify the security risk found.,10,1,302
+,Google search for that risk and the term Symantec together.,25,2,302
+,The Discovered date is at the top of the Symantec Security Center write-up.,40,3,302
+,Use osquery:results as the sourcetype.,10,1,303
+,Osquery is logging command executions on the Linux host hoth.,25,2,303
+,Use WinEventLog:Security as the sourcetype.,10,1,304
+,Use osquery:results as the sourcetype.,10,1,305
+,Osquery is logging open ports found on the Linux host hoth.,25,2,305
+,Use o365:management:activity as the sourcetype.,10,1,306
+,Start with XmlWinEventLog:Microsoft-Windows-Sysmon/Operational as the sourcetype.,10,1,307
+,Sysmon provides hash values when processes are executed. Figure out what EventCode you need to look at for that.,25,2,307
+,Use WinEventLog:Security as the sourcetype.,10,1,308
+,Use ms:aad:audit as the sourcetype.,10,1,309
+,Use stream:smtp as the sourcetype and look for alerts about malicious attachments,50,1,310
+,Use XmlWinEventLog:Microsoft-Windows-Sysmon/Operational as the sourcetype.,50,1,311
+,Details of incoming email can be found in the o365:management:activity sourcetype.,50,1,312
+,"Find an ""Operation"" that might be ""used"".",125,2,312
+,Use XmlWinEventLog:Microsoft-Windows-Sysmon/Operational as the sourcetype.,50,1,314
+,Start with osquery:results as the sourcetype.,50,1,315
+,Osquery is performing FIM on certain directories on the Linux host hoth.,125,2,315
+,Use stream:http as the sourcetype.,50,1,316
+,Start with XmlWinEventLog:Microsoft-Windows-Sysmon/Operational as the sourcetype.,50,1,317
+,Use linux_secure as the sourcetype.,50,1,318
+,Use ms:o365:management as the sourcetype.,50,1,319
+,Use WinEventLog:Security as the sourcetype.,50,1,320
+,Use stream:smtp as the sourcetype.,50,1,321
+,"Start with XmlWinEventLog:Microsoft-Windows-Sysmon/Operational as the sourcetype, or review the PowerShell logging on various Frothly laptops.",50,1,322
+,Start with XmlWinEventLog:Microsoft-Windows-Sysmon/Operational as the sourcetype.,50,1,323
+,How can you find out what external IP address Al Bungstein is using?,50,1,324
+,OSINT is your friend here. Pivot off of Al's external IP.,125,2,324
+,There is a single sourcetype in Splunk that also contains this information. It is a scripted input running on Al's machine.,200,3,324
+,Start with ms:aad:signin as the sourcetype.,50,1,325
+,Start with code42:security as the sourcetype.,50,1,326
+,Can you figure out what files Mallory uploaded or downloaded to her laptop? Is one of them related to advertising?,125,2,326
+,Find the file Mallory reviewed about advertising and read the contents.,200,3,326
+,"Start with any sourcetype that provides detailed process execution data, or one that provides clear-text details of information posted to the Linux host hoth.",100,1,328
+,You are looking for a long string of base64 information.,250,2,328
+,"Figure out what files were uploaded, and pivot off of interesting file names found. The WinEventLog:Security sourcetype is helpful, as is the osquery:results sourcetype.",100,1,329
+,You are looking for a long string of base64 information.,250,2,329
+,You will need to find a site to decode the base64 to a viewable image. CyberChef is a good one!,400,3,329
+,Start with cisco:asa as the sourcetype.,100,1,330
+,Start with WinEventLog:Security as the sourcetype.,100,1,331
+,"Splunk commands such as eventstats, perc25() and perc75() would be helpful here.",250,2,331
+,"If you have never used the interquartile range (IQR) to identify outliers, take a look at the documentation https://docs.splunk.com/Documentation/Splunk/latest/Search/Findingandremovingoutliers#Use_the_interquartile_range_.28IQR.29_to_identify_outliers",400,3,331
+,"Start with any sourcetype that provides detailed process execution data, or one that provides clear-text details of information posted to the Linux host hoth.",100,1,332
+,You are looking for a long string of base64 information.,250,2,332
+,Google search.,400,3,332
+,Start with a sourcetype that provides clear-text details of information posted to the Linux host hoth.,100,1,333
+,"Looking at the information posted to the server, you'll notice strange code (much longer than what should be put into a field on a web form) being posted to a particular URI on the server.",250,2,333

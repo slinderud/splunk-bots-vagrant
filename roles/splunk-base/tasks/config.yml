@@ -1,0 +1,40 @@
+---
+- name: Copy Splunk authentication.conf for system
+  template:
+    src: system_local.authentication.j2
+    dest: "{{ splunk_base }}/etc/system/local/authentication.conf"
+    force: no
+    owner: splunk
+    group: splunk
+    mode: '0640'
+  when: use_splunk_web|default(False)
+
+- name: Use splunk hash-passwd to return a password hash
+  command: "{{ splunk_base }}/bin/splunk hash-passwd {{ splunk_admin_password }}"
+  register: splunk_hashed_password
+  become_user: splunk
+  check_mode: no
+  changed_when: False
+  ignore_errors: True
+  no_log: true
+
+- name: Check for user seed file
+  stat: "path={{ splunk_base }}/etc/system/local/user-seed.conf"
+  register: seed_file
+
+- name: Check for passwd file
+  stat: "path={{ splunk_base }}/etc/passwd"
+  register: passwd_file
+
+- name: Create default admin user seed file
+  copy:
+    content: |
+      [user_info]
+      USERNAME = {{ splunk_admin_user }}
+      HASHED_PASSWORD = {{ splunk_hashed_password.stdout }}
+    dest: "{{ splunk_base }}/etc/system/local/user-seed.conf"
+    owner: splunk
+    group: splunk
+    mode: '0640'
+  when: seed_file.stat.exists == False and passwd_file.stat.exists == False
+  no_log: true

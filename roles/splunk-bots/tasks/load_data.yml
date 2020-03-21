@@ -1,0 +1,108 @@
+---
+- name: Get BOTS questions
+  uri:
+    url: "https://127.0.0.1:8089/servicesNS/nobody/SA-ctf_scoreboard/storage/collections/data/ctf_questions?output_mode=json"
+    method: GET
+    validate_certs: no
+    status_code:
+      - 200
+      - 404
+    url_username: "{{ splunk_admin_user }}"
+    url_password: "{{ splunk_admin_password }}"
+  register: bots_questions
+
+- name: Read question from CSV file and return a dictionary
+  read_csv:
+    path: "{{ playbook_dir }}/data/{{ splunk_bots_version }}/ctf/ctf_questions.csv"
+  register: questions
+  delegate_to: localhost
+  become: false
+  when: bots_questions.json | length <= 1
+  tags:
+   - skip_ansible_lint
+
+- name: Update BOTS questions
+  uri:
+    url: "https://127.0.0.1:8089/servicesNS/nobody/SA-ctf_scoreboard/storage/collections/data/ctf_questions/batch_save"
+    method: POST
+    validate_certs: no
+    status_code:
+      - 200
+      - 201
+    body: "{{ questions.list }}"
+    body_format: "json"
+    url_username: "{{ splunk_admin_user }}"
+    url_password: "{{ splunk_admin_password }}"
+  when: bots_questions.json | length <= 1
+
+- name: Get BOTS answers
+  uri:
+    url: "https://127.0.0.1:8089/servicesNS/nobody/SA-ctf_scoreboard_admin/storage/collections/data/ctf_answers?output_mode=json"
+    method: GET
+    validate_certs: no
+    status_code:
+      - 200
+      - 404
+    url_username: "{{ splunk_admin_user }}"
+    url_password: "{{ splunk_admin_password }}"
+  register: bots_answers
+
+- name: Read answers from CSV file and return a dictionary
+  read_csv:
+    path: "{{ playbook_dir }}/data/{{ splunk_bots_version }}/ctf/ctf_answers.csv"
+  register: answers
+  delegate_to: localhost
+  become: false
+  when: bots_answers.json | length <= 1
+  tags:
+   - skip_ansible_lint
+
+- name: Update BOTS answers
+  uri:
+    url: "https://127.0.0.1:8089/servicesNS/nobody/SA-ctf_scoreboard_admin/storage/collections/data/ctf_answers/batch_save"
+    method: POST
+    validate_certs: no
+    status_code:
+      - 200
+      - 201
+    body: "{{ answers.list }}"
+    body_format: "json"
+    url_username: "{{ splunk_admin_user }}"
+    url_password: "{{ splunk_admin_password }}"
+  when: bots_questions.json | length <= 1
+
+- name: Get BOTS hints
+  uri:
+    url: "https://127.0.0.1:8089/servicesNS/nobody/SA-ctf_scoreboard_admin/storage/collections/data/ctf_hints?output_mode=json"
+    method: GET
+    validate_certs: no
+    status_code:
+      - 200
+      - 404
+    url_username: "{{ splunk_admin_user }}"
+    url_password: "{{ splunk_admin_password }}"
+  register: bots_hints
+
+- name: Read hints from CSV file and return a dictionary
+  read_csv:
+    path: "{{ playbook_dir }}/data/{{ splunk_bots_version }}/ctf/ctf_hints.csv"
+  register: hints
+  delegate_to: localhost
+  become: false
+  when: bots_hints.json | length <= 1
+  tags:
+   - skip_ansible_lint
+
+- name: Update BOTS hints
+  uri:
+    url: "https://127.0.0.1:8089/servicesNS/nobody/SA-ctf_scoreboard_admin/storage/collections/data/ctf_hints/batch_save"
+    method: POST
+    validate_certs: no
+    status_code:
+      - 200
+      - 201
+    body: "{{ hints.list }}"
+    body_format: "json"
+    url_username: "{{ splunk_admin_user }}"
+    url_password: "{{ splunk_admin_password }}"
+  when: bots_hints.json | length <= 1

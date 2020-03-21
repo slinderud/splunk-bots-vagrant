@@ -1,0 +1,34 @@
+---
+- name: Accept Splunk EULA
+  shell: "{{ splunk_base }}/bin/splunk start --accept-license --no-prompt creates={{ splunk_base }}/var/lib/splunk"
+  become_user: splunk
+  changed_when: False
+  when: splunk_version_check is succeeded
+  notify: "{{ notify_task }}"
+
+- name: Verify non-systemd service is disabled
+  service:
+    name: splunk
+    enabled: no
+  ignore_errors: True
+  when: ansible_service_mgr == "systemd"
+
+- name: Setup Splunk to start at boot with splunk user
+  shell: "{{ splunk_base }}/bin/splunk enable boot-start -user splunk creates={{ service_file }}"
+  when: splunk_installed is succeeded
+  notify: "{{ notify_task }}"
+
+- name: Copy Splunk startup file for service
+  template:
+    src: "{{ tpl_src }}"
+    dest: "{{ tpl_dest }}"
+    mode: '0755'
+  notify: "{{ notify_task }}"
+
+- name: Splunk is running
+  shell: "{{ splunk_base }}/bin/splunk status"
+  register: splunk_running
+  changed_when: False
+  check_mode: no
+  ignore_errors: True
+  when: splunk_path.stat.exists

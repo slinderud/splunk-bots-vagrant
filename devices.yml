@@ -1,0 +1,13 @@
+---
+- name: splunk
+  enable: yes
+  ip: 192.168.251.10
+  box: ubuntu/bionic64
+  groups:
+    - 'bots'
+  hw:
+    cpulimit: 100
+    ram: 4096
+    core: 2
+    disk: 100
+

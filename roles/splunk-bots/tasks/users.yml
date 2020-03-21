@@ -1,0 +1,83 @@
+---
+# Splunk needs to restards after loading bots data. Restart #2
+- meta: flush_handlers
+
+- name: Get BOTS CTF Answer Service Account
+  uri:
+    url: "https://127.0.0.1:8089/services/authentication/users/{{ splunk_bots_casa_user }}?output_mode=json"
+    method: GET
+    validate_certs: no
+    status_code:
+      - 200
+      - 404
+    url_username: "{{ splunk_admin_user }}"
+    url_password: "{{ splunk_admin_password }}"
+  register: bots_casa_user
+
+- name: Create BOTS CTF Answer Service Account
+  uri:
+    url: "https://127.0.0.1:8089/services/authentication/users/"
+    method: POST
+    validate_certs: no
+    status_code:
+      - 200
+      - 201
+    body:
+      name: "{{ splunk_bots_casa_user }}"
+      password: "{{ splunk_bots_casa_password }}"
+      roles: ctf_answers_service
+    body_format: "form-urlencoded"
+    url_username: "{{ splunk_admin_user }}"
+    url_password: "{{ splunk_admin_password }}"
+  when: bots_casa_user.status == 404
+
+- name: Get BOTS Admin Account
+  uri:
+    url: "https://127.0.0.1:8089/services/authentication/users/{{ splunk_bots_admin_user }}?output_mode=json"
+    method: GET
+    validate_certs: no
+    status_code:
+      - 200
+      - 404
+    url_username: "{{ splunk_admin_user }}"
+    url_password: "{{ splunk_admin_password }}"
+  register: bots_admin_user
+
+- name: Create BOTS Admin Account
+  uri:
+    url: "https://127.0.0.1:8089/services/authentication/users/"
+    method: POST
+    validate_certs: no
+    status_code:
+      - 200
+      - 201
+    body:
+      name: "{{ splunk_bots_admin_user }}"
+      password: "{{ splunk_bots_admin_password }}"
+      roles:
+       - admin
+       - ctf_admin
+       - can_delete
+    body_format: "form-urlencoded"
+    url_username: "{{ splunk_admin_user }}"
+    url_password: "{{ splunk_admin_password }}"
+  when: bots_admin_user.status == 404
+
+- name: Update BOTS Admin Account
+  uri:
+    url: "https://127.0.0.1:8089/services/authentication/users/{{ splunk_bots_admin_user }}"
+    method: POST
+    validate_certs: no
+    status_code:
+      - 200
+      - 201
+    body:
+      roles:
+       - admin
+       - ctf_admin
+       - can_delete
+    body_format: "form-urlencoded"
+    url_username: "{{ splunk_admin_user }}"
+    url_password: "{{ splunk_admin_password }}"
+  when:
+   - '"admin" and "ctf_admin" and "can_delete" not in bots_admin_user.json.entry[0].content.roles'

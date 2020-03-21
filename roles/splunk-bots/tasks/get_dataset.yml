@@ -1,0 +1,40 @@
+---
+- name: set dataset type
+  set_fact:
+      dataset: "{{ splunk_bots_version }}_data_set{% if 'botsv2' in splunk_bots_version and 'attack_only' in splunk_botsv2_dataset %}_attack_only{% endif %}.tgz"
+
+- name: create cache dir
+  file:
+    path: "{{ playbook_dir }}/data/dataset/"
+    state: directory
+  become: false
+  delegate_to: localhost
+
+- name: check if dataset is cached
+  stat:
+    path: "{{ playbook_dir}}/data/dataset/{{ dataset }}"
+  register: dataset_result
+
+- name: Download BOTS data
+  get_url:
+    url: "https://botsdataset.s3.amazonaws.com/{{ splunk_bots_version }}/{{ dataset }}"
+    dest: "{{ playbook_dir }}/data/dataset/{{ dataset }}"
+    timeout: 500
+  delegate_to: localhost
+  become: false
+  when: dataset_result.stat.exists == false
+
+- name: Unarchive BOTS data
+  unarchive:
+    src: "data/dataset/{{ dataset }}"
+    dest: "{{ splunk_base }}/etc/apps/"
+    creates: "{{ splunk_base }}/etc/apps/{{splunk_bots_version}}_data_set"
+  notify: "{{ notify_task }}"
+  become_user: splunk
+
+# Splunk needs two restarts to loads all the botsv2 data. Restart #1
+- meta: flush_handlers
+
+- name: pause for things to start
+  pause:
+    minutes: 1

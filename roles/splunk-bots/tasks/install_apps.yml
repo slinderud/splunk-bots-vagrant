@@ -1,0 +1,30 @@
+---
+- name: Install required tools
+  apt:
+    pkg:
+     - unzip
+
+- name: Install splunk apps
+  unarchive:
+    src: "{{ item.src }}"
+    dest: "{{ splunk_base }}/etc/apps/"
+  become_user: splunk
+  notify: "{{ notify_task }}"
+  with_filetree: data/{{ splunk_bots_version }}/apps/
+  when: item.state == 'file'
+
+- name: Get CTF Scoreboard
+  git:
+    repo: 'https://github.com/splunk/SA-ctf_scoreboard'
+    dest: "{{ splunk_base }}/etc/apps/SA-ctf_scoreboard"
+    version: master
+  notify: "{{ notify_task }}"
+  become_user: splunk
+
+- name: Get CTF scoreboard admin
+  git:
+    repo: https://github.com/splunk/SA-ctf_scoreboard_admin
+    dest: "{{ splunk_base }}/etc/apps/SA-ctf_scoreboard_admin"
+    version: master
+  notify: "{{ notify_task }}"
+  become_user: splunk

@@ -1,0 +1,16 @@
+---
+- name: Create a scoreboard directory
+  file:
+    path: "{{ splunk_base }}/var/log/scoreboard"
+    state: directory
+  become_user: splunk
+
+- name: Create scoreboard controller config
+  template:
+    src: scoreboard_controller.config.j2
+    dest: "{{ splunk_base }}/etc/apps/SA-ctf_scoreboard/appserver/controllers/scoreboard_controller.config"
+    force: no
+    owner: splunk
+    group: splunk
+    mode: '0640'
+  notify: "{{ notify_task }}"
