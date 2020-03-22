@@ -8,4 +8,4 @@
 
   vars:
     - splunk_bots_version: botsv3
-   # - splunk_botsv2_dataset: attack_only
+    #- splunk_botsv2_dataset: attack_only

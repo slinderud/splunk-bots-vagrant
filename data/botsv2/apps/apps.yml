@@ -1,0 +1,64 @@
+bots_apps:
+ - name: SA-Investigator
+   id: 3749
+   release: 2.2.2
+ - name: Base64
+   id: 1922
+   release: 1.1
+ - name: URL Toolbox
+   id: 2734
+   release: 1.8
+ - name: Splunk Security Essentials
+   id: 3435
+   release: 3.0.6
+ - name: JellyFisher
+   id: 3626
+   release: 0.1.0
+ - name: Splunk Common Information Model
+   id: 1621
+   release: 4.15.0
+ - name: Splunk Add-on for Apache
+   id: 3186
+   release: 1.0.0
+ - name: Splunk Add-on for Microsoft Cloud Services
+   id: 3110
+   release: 4.0.1
+ - name: Palo Alto Networks Add-on for Splunk
+   id: 2757
+   release: 6.2.0
+ - name: Splunk Add-on for Symantec Endpoint Protection
+   id: 2772
+   release: 3.0.1
+ - name: TA-Suricata
+   id: 2760
+   release: 2.3.3
+ - name: Microsoft Sysmon Add-on
+   id: 1914
+   release: 10.6.2
+ # - name: Collectd App for Splunk Enterprise
+ #   id: 2875
+ #   release: 1.1
+ - name: OSquery
+   id: 3278
+   release: 1.0
+ - name: SSL Certificate Checker
+   id: 3172
+   release: 3.2
+ - name: Website Monitoring
+   id: 1493
+   release: 2.9.2
+ - name: Splunk Add-on for Microsoft IIS
+   id: 3185
+   release: 1.0.1
+ - name: Splunk Add-on for Unix and Linux
+   id: 833
+   release: 7.0.1
+ - name: Splunk Stream Add-on
+   id: 1809
+   release: 7.2.0
+ - name: Splunk Add-on for Microsoft Windows
+   id: 742
+   release: 7.0.0
+ - name: lookup_file_editor
+   id: 1724
+   release: 3.3.3

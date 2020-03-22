@@ -4,14 +4,68 @@
     pkg:
      - unzip
 
+- name: Load correct vars
+  include_vars:
+    file: "data/{{ splunk_bots_version }}/apps/apps.yml"
+
+- name: Get Auth token
+  uri:
+    url: https://splunkbase.splunk.com/api/account:login/
+    method: POST
+    validate_certs: no
+    status_code: 200
+    body: "username={{ splunkbase_user }}&password={{ splunkbase_password }}"
+    body_format: raw
+    return_content: true
+  register: splunkbase_auth_token_response
+
+- set_fact:
+    splunkbase_auth_token: "{{ splunkbase_auth_token_response.content | regex_findall('<id>(.*)<\\/id>') }}"
+
+- name: Get splunkbase redirect
+  uri:
+    url: "https://splunkbase.splunk.com/app/{{ item.id }}/release/{{ item.release }}/download/?origin=asc&lead=false"
+    method: GET
+    validate_certs: no
+    status_code: 200
+    headers:
+      X-Auth-Token: "{{ splunkbase_auth_token.0 }}"
+  loop: "{{ bots_apps }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: bots_apps_redirect
+
+- name: Create a tmp directory for apps
+  file:
+    path: /tmp/apps/
+    state: directory
+  become_user: splunk
+
+- name: Download apps
+  get_url:
+    url: "{{ item.url }}"
+    dest: /tmp/apps/
+    headers:
+      X-Auth-Token: "{{ splunkbase_auth_token.0 }}"
+  become_user: splunk
+  loop: "{{ bots_apps_redirect.results }}"
+  loop_control:
+    label: "{{ item.url }}"
+  when: item.status == 200
+
+- name: Get list of all downloaded app files in tmp
+  find:
+    paths: /tmp/apps
+  register: files
+
 - name: Install splunk apps
   unarchive:
-    src: "{{ item.src }}"
+    src: "{{ item.path }}"
     dest: "{{ splunk_base }}/etc/apps/"
+    remote_src: yes
   become_user: splunk
   notify: "{{ notify_task }}"
-  with_filetree: data/{{ splunk_bots_version }}/apps/
-  when: item.state == 'file'
+  loop: "{{ files.files }}"
 
 - name: Get CTF Scoreboard
   git:
