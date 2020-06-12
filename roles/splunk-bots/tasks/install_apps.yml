@@ -34,6 +34,7 @@
   loop_control:
     label: "{{ item.name }}"
   register: bots_apps_redirect
+  ignore_errors: yes
 
 - name: Create a tmp directory for apps
   file:
@@ -50,7 +51,7 @@
   become_user: splunk
   loop: "{{ bots_apps_redirect.results }}"
   loop_control:
-    label: "{{ item.url }}"
+    label: "{{ item.item.name }}"
   when: item.status == 200
 
 - name: Get list of all downloaded app files in tmp
@@ -66,6 +67,8 @@
   become_user: splunk
   notify: "{{ notify_task }}"
   loop: "{{ files.files }}"
+  loop_control:
+    label: "{{ item.path }}"
 
 - name: Get CTF Scoreboard
   git:

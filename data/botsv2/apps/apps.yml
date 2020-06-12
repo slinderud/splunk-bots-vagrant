@@ -4,13 +4,13 @@ bots_apps:
    release: 2.2.2
  - name: Base64
    id: 1922
-   release: 1.1
+   release: "1.1"
  - name: URL Toolbox
    id: 2734
-   release: 1.8
+   release: "1.8"
  - name: Splunk Security Essentials
    id: 3435
-   release: 3.0.6
+   release: 3.1.1
  - name: JellyFisher
    id: 3626
    release: 0.1.0
@@ -28,7 +28,7 @@ bots_apps:
    release: 6.2.0
  - name: Splunk Add-on for Symantec Endpoint Protection
    id: 2772
-   release: 3.0.1
+   release: 3.1.0
  - name: TA-Suricata
    id: 2760
    release: 2.3.3
@@ -40,25 +40,25 @@ bots_apps:
  #   release: 1.1
  - name: OSquery
    id: 3278
-   release: 1.0
+   release: "1.0"
  - name: SSL Certificate Checker
    id: 3172
-   release: 3.2
+   release: "3.2"
  - name: Website Monitoring
    id: 1493
-   release: 2.9.2
+   release: 2.9.3
  - name: Splunk Add-on for Microsoft IIS
    id: 3185
    release: 1.0.1
  - name: Splunk Add-on for Unix and Linux
    id: 833
-   release: 7.0.1
+   release: 8.0.0
  - name: Splunk Stream Add-on
    id: 1809
    release: 7.2.0
  - name: Splunk Add-on for Microsoft Windows
    id: 742
-   release: 7.0.0
+   release: 8.0.0
  - name: lookup_file_editor
    id: 1724
-   release: 3.3.3
+   release: 3.4.2

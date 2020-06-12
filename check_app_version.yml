@@ -1,0 +1,43 @@
+---
+- name: Check app versions inconsistensies
+  hosts: localhost
+  tasks:
+    - name: Load correct vars
+      include_vars:
+        file: "data/{{ version }}/apps/apps.yml"
+
+    - name: Get some webpages
+      uri:
+        url: "https://splunkbase.splunk.com/app/{{ item.id }}"
+        method: GET
+        validate_certs: no
+        status_code: 200
+        return_content: yes
+        timeout: 60
+        http_agent: "One day i will appear in splunks own logs. This is what i asspire to"
+      loop: "{{ bots_apps }}"
+      loop_control:
+        label: "{{ item.name }}"
+      register: bots_apps_webpage
+
+    - name: create list of fetched versions
+      vars:
+        fetched_version: "{{ item.content | regex_search('sb-target=\"(.*?)\"', '\\1') }}"
+      set_fact:
+        fetched_report: "{{ fetched_report|default([]) + [ {'name': item.item.name, 'id': item.item.id, 'release': fetched_version.0} ] }}"
+      loop: "{{ bots_apps_webpage.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    - name: create report
+      set_fact:
+        report: "{{ report|default([]) + [ {'name': item.0.name, 'id': item.0.id, 'old_release': item.0.release, 'new_release': item.1.release} ] }}"
+      loop: "{{ bots_apps|product(fetched_report)|list }}"
+      loop_control:
+        label: "{{ item.0.name }}"
+      when:
+        - item.0.id == item.1.id
+        - item.0.release != item.1.release
+
+    - debug:
+        var: report

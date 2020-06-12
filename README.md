@@ -59,6 +59,31 @@ splunk_botsv2_dataset: botsv2 dataset (full or attack_only)
 In the ansible playbook there is a caching mechanism so we don't actually pull
 down the datasets everytime we spin up a new vm.
 
+### Updating Splunk apps
+
+Sometimes splunk updated apps and the playbook skips downloading them. So to ease the checking if there has been any updates you can just run this:
+
+```
+ansible-playbook check_app_version.yml --extra-vars "version=botsv3"
+```
+It will generate a report with what app needs a updated release. I might integrate this into the main role.
+
+```
+TASK [debug] ******************************************************************************************
+ok: [localhost] => {
+    "report": [
+        {
+            "id": 1724,
+            "name": "lookup_file_editor",
+            "new_release": "b",
+            "old_release": "3.3.3"
+        }
+    ]
+}
+```
+
+
+
 ## Contributing
 
 Pull requests are welcome.
