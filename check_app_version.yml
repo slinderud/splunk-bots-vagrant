@@ -14,7 +14,7 @@
         status_code: 200
         return_content: yes
         timeout: 60
-        http_agent: "One day i will appear in splunks own logs. This is what i asspire to"
+        http_agent: "One day i will appear in splunks own logs. This is what i aspire to"
       loop: "{{ bots_apps }}"
       loop_control:
         label: "{{ item.name }}"

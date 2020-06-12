@@ -75,7 +75,7 @@ ok: [localhost] => {
         {
             "id": 1724,
             "name": "lookup_file_editor",
-            "new_release": "b",
+            "new_release": "3.4.2",
             "old_release": "3.3.3"
         }
     ]
