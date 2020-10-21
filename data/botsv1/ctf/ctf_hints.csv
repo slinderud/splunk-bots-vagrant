@@ -1,0 +1,51 @@
+HintCost,Hint,HintNumber,Number
+5,"Start your search with ""sourcetype=stream:http"" and review the rich data captured in these events. ",1,101
+10,"You'll notice that source and destination IP addresses are stored in fields called src_ip and dest_ip respectively. Determine top-talkers for HTTP by combining : ""sourcetype=stream:http | stats count by src_ip, dest_ip | sort -count""",2,101
+20,Many commercial web vulnerability scanners clearly identify themselves in the headers of the HTTP request. Inspect the HTTP source headers (src_headers) of requests from the IP identified in question 101.,1,102
+15,Look for successful (http status code of 200) GET requests from the scanning IP address (identified previously) and inspect the fields related to URL/URI for clues to the CMS in use.,1,103
+10,First find the IP address of the web server hosting imreallynotbatman.com. You may have found this IP during the course of answering the previous few questions.,1,104
+25,"Revealing sourcetypes include stream:http, fgt_utm, and suricata. ",2,104
+25,"The key here is searching for events where the IP address of the web server is the source. Because it's a web server, we most often see it as a destination but in this case the intruder took control of the server and pulled the defacement file from an internet site. ",3,104
+25,"Consider the answer to question 104. The fully qualified domain name was recorded by Stream, Suricata, and the Fortigate firewall.",1,105
+15,"Consider the answer to question 104. The IP address was recorded by Stream, Suricata, and the Fortigate firewall. Do you dig me?",1,106
+15,"Malicious IP addresses, like the one in the last question are examples of attacker infrastructure. Infrastructure is often reused by the same group. Use a service like www.robtex.com to determine other domains that are or have been associated with this attacker infrastructure (IP address).",1,107
+20,Use the whois lookup on domaintools.com to iterate through domains associated with this IP and visually search for suspicious email addresses. Your knowledge of Batman will help you here!,2,107
+10,"Login attempts will use the HTTP POST method, and they will include some obvious fields in the form_data field of stream:http events.",1,108
+5,File uploads to web forms use the HTTP POST method. ,1,109
+20,The question mentions and executable. Search for common executable filename extensions on Windows systems.,2,109
+25,"It will be difficult to calulate a hash based on the Splunk event you used to answer 109. Instead Search for the file name in a different data source to find evidence of execution, including file hash values.",1,110
+25,This is an ideal use case for Microsoft Sysmon data. Determine the sourcetype for Sysmon events and search them for the executable.,2,110
+20,You need to pivot outside of Splunk to answer this question. Use the IP address discovered earlier to search for malware that has been associated with it in the past.,1,111
+25,"Experienced analysts know to use sites like www.threatminer.org to search for malware associated with the malicious IP address, but if all alse fails, Google it!",2,111
+50,Do some further research on the hash discovered in the last question. Virustotal.com is a good starting place.,1,112
+75,malwr.com might lead you astray,2,112
+100,"The hex codes we are after here will be formatted like this: 49 66 20 79 6f 75 20 64 65 63 6f 64 65 20 74 68 65 20 68 69 6e 74 2c 20 79 6f 75 20 64 6f 6e 27 74 20 6e 65 65 64 20 61 20 68 69 6e 74 21. Submit the hex codes, but decode them on the web for fun!",3,112
+25,Use a service like www.robtex.com to determine other domains that are or have been associated with the attacker infrastructure (IP address).,1,113
+50,Use a high quality whois site like www.domaintools.com to perform whois lookups against these domains until you see a hex code where you were expecting text. Warning not all whois sites show you all fields!,2,113
+25,"Login attempts will use the HTTP POST method, and they will include some obvious fields that you can search for in the form_data field of stream:http events.",1,114
+50,"By default, Splunk will put the most recent events at the top of the list. You can use the ""reverse"" SPL command to show you least recent first.",2,114
+10,"If you have not done so already, try to extract the attempted password into a new field using the ""rex"" SPL command and a regular expression. Having the password attempt in its own field will serve you well for the next several questions!",1,115
+20,"It's not hard to get a list of songs by the artist. Once you have that,use the ""len()"" function of the ""eval"" SPL command. For Splunk style points, use a lookup table to match the password attempts with songs.",2,115
+100,"From the previous questions, you should know how to extract the password attempts.  You should also know what IP is submitting passwords.  Are any other IP addresses submitting passwords?",1,116
+50,"Calculate the length of every password attempt and store the result in a new field. Then calulate the average of that new field with a stats command. Use eval to average, or just visually inspect.",1,117
+50,"Then calulate the average of that new length field with a stats command, and finally use eval to round, or just manually round.",2,117
+100,You'll note from previous answers that one of the passwords was attempted twice. You need to calculate the duration of time between those two attempts.,1,118
+50,"Need more help? Write a search that returns only the two events in questions, then use  either ""| delta _time"" or ""| transaction <extracted-pword-attempt>"" SPL commands.",2,118
+100,"Be sure you are extracting the password attempts correctly, then use a stats function to count unique (not total) attempts.",1,119
+15,Keep it simple and just search for the hostname provided in the question.  Try using the stats command to get a count of events by source ip address to point you in the right direction.,1,200
+15,Keep it simple and start your search by looking at only the sourcetype associated with Suricata and maybe even the name of the malware in question.  The field containing the signature ID should be obvious.  Use stats to create a count by the field containing the signature ID.  ,1,201
+50,Search stream:dns data for A queries coming from the infected workstation IP on the date in question.  Try and narrow your search period.,1,202
+100,"Perform a shannon entropy analysis on the query{} field using URL toolbox by adding this to the end of the search: |`ut_shannon(query{})` | stats count by ut_shannon, query{} | sort -ut_shannon ",2,202
+50,Search stream:dns data for A queries coming from the infected workstation IP on the date in question. ,1,203
+50,"Use the ""| reverse"" SPL command to show oldest events first.",2,203
+50,"Eliminate domain lookups that you can explain, question the first one you cannot.",3,203
+80,Go and git some IOCs on Cerber.  Then compare to the DNS Data,4,203
+150,"Keep it simple.  Start by looking at sysmon data for the infected device on the date in question.  Calculate the length of the command line using the ""len()"" function of the ""eval"" SPL command, and give your eyes a break by using the splunk table command. ",1,204
+100,Tough question.  Perhaps you should give http://answers.splunk.com a try.,1,205
+25,"Search for SMB (Windows file sharing protocol) traffic from the infected device on the date in question. The ""stats"" SPL command can be used to count the most common destination IP for the SMB protocol.",1,206
+10,Don't use SMB this time - it's a trap!  Windows event logs are the way to go for this one.  Focus on the event types that deal with windows shares and narrow the search by looking for distinct filenames for the extension in question. ,1,207
+25,"Embrace your sysmon data.  Search for a command issued by the infected device on the date in question referencing the filename in question, and use the process_id, ParentProcessId, CommandLine,  and ParentCommandLine, to track down the parent process id of them all.",1,208
+15,Sysmon to the rescue again.  Focus on the infected machine as well as the user profile while searching for the filename extension in question.,1,209
+50,"In Sysmon events, EventCode=2 indicates file creation time has changed. Watch out for duplicates!",2,209
+75,"When looking for potentially malicious file, start your search with the Suricata data.  Narrow your search by focusing on the infected device. Remember malware does not always have to begin as an executable file.  ",1,210
+500,The enrcyptor file was an image!  ,1,211
